@@ -1,4 +1,5 @@
 import AppBar from "@material-ui/core/AppBar";
+import Link from "../src/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Tabs, Tab, Toolbar } from "@material-ui/core";
 import { APP_NAME } from "../config";
@@ -7,12 +8,22 @@ const useStyles = makeStyles((theme) => ({
   indicator: {
     backgroundColor: theme.palette.primary.contrastText,
   },
+  logo: {
+    textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black",
+  },
   tabsContainer: {
     marginLeft: "auto",
   },
+  tab: {
+    transition: "all .2s ease-in",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "none",
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
   toolbarMargin: {
     ...theme.mixins.toolbar,
-    marginBottom: "3em",
   },
 }));
 
@@ -29,7 +40,11 @@ export default function Header() {
       <AppBar>
         <Toolbar>
           <Box>
-            <Typography variant="h3">{APP_NAME}</Typography>
+            <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
+              <Typography className={classes.logo} variant="h3">
+                {APP_NAME}
+              </Typography>
+            </Link>
           </Box>
           <Box className={classes.tabsContainer}>
             <Tabs
@@ -38,9 +53,18 @@ export default function Header() {
               aria-label="simple tabs example"
               classes={{ indicator: classes.indicator }}
             >
-              <Tab label="Item One" />
-              <Tab label="Item Two" />
-              <Tab label="Item Three" />
+              <Tab
+                component={Link}
+                href="/signup"
+                label="Sign Up"
+                className={classes.tab}
+              />
+              <Tab
+                component={Link}
+                href="/signin"
+                label="Sign In"
+                className={classes.tab}
+              />
             </Tabs>
           </Box>
         </Toolbar>

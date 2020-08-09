@@ -1,8 +1,8 @@
 import { createMuiTheme } from "@material-ui/core/styles";
-import { red, grey, blue } from "@material-ui/core/colors";
+import { red, grey, blue, purple } from "@material-ui/core/colors";
 
-const primaryColor = grey[800];
-const secondaryColor = blue[800];
+const primaryColor = purple[500];
+const secondaryColor = blue[300];
 
 // Create a theme instance.
 const theme = createMuiTheme({
