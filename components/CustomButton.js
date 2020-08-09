@@ -15,5 +15,9 @@ const useStyles = makeStyles((theme) => ({
 export default function CustomButton({ text }) {
   const classes = useStyles();
 
-  return <Button className={classes.button}>{text}</Button>;
+  return (
+    <Button variant="outlined" className={classes.button}>
+      {text}
+    </Button>
+  );
 }

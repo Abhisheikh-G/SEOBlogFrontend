@@ -39,8 +39,8 @@ export default function Index() {
             </Link>
           </Grid>
           <Grid item>
-            <Link href="/signup">
-              <CustomButton text="Sign Up" />
+            <Link href="/signin">
+              <CustomButton text="Sign In" />
             </Link>
           </Grid>
         </Grid>
