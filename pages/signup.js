@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import Router from "next/router";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -10,10 +11,12 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
+import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
-import { signup } from "../actions/auth";
+import { signup, isAuth } from "../actions/auth";
+import { CircularProgress } from "@material-ui/core";
 
 function Copyright() {
   return (
@@ -52,109 +55,149 @@ export default function SignUp() {
   const classes = useStyles();
   const { register, handleSubmit, errors } = useForm();
   const [loading, setLoading] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [showForm, setShowForm] = React.useState(true);
+
+  React.useEffect(() => {
+    if (isAuth()) {
+      Router.replace("/");
+    }
+  }, []);
+
   const onSubmit = (data) => {
-    console.log(data);
+    setLoading(true);
+    setError("");
+    setMessage("");
     const { firstName, lastName, email, password } = data;
+
     const name = `${firstName} ${lastName}`;
+
     const user = {
       name: name,
       email: email,
       password: password,
     };
-    signup(user).then((data) => console.log(data));
+
+    signup(user).then((data) => {
+      if (data.error) {
+        setError(data.error);
+        setLoading(false);
+      } else {
+        setMessage(data.message);
+        setLoading(false);
+        setShowForm(false);
+      }
+      console.log(data);
+    });
   };
   console.log(errors);
 
+  const showLoading = () =>
+    loading ? <CircularProgress color="secondary" /> : "";
+  const showError = () =>
+    error ? <Alert severity="error">{error}</Alert> : "";
+  const showMessage = () =>
+    message ? <Alert severity="success">{message}</Alert> : "";
+  const signupForm = () => (
+    <div className={classes.paper}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign up
+      </Typography>
+      <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              autoComplete="fname"
+              name="firstName"
+              variant="outlined"
+              required
+              fullWidth
+              inputRef={register({ required: true })}
+              id="firstName"
+              label="First Name"
+              autoFocus
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              inputRef={register({ required: true })}
+              autoComplete="lname"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              inputRef={register({ required: true })}
+              autoComplete="email"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              inputRef={register({ required: true, min: 6 })}
+              autoComplete="current-password"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox value="allowExtraEmails" color="primary" />}
+              label="I want to receive inspiration, marketing promotions and updates via email."
+            />
+          </Grid>
+        </Grid>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Sign Up
+        </Button>
+        <Grid container justify="flex-end">
+          <Grid item>
+            <Link href="#" variant="body2">
+              Already have an account? Sign in
+            </Link>
+          </Grid>
+        </Grid>
+      </form>
+    </div>
+  );
+
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                inputRef={register({ required: true })}
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                inputRef={register({ required: true })}
-                autoComplete="lname"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                inputRef={register({ required: true })}
-                autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                inputRef={register({ required: true, min: 6 })}
-                autoComplete="current-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign Up
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="#" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
+    <>
+      {showError()}
+      {showMessage()}
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        {showForm && signupForm()}
+        {showLoading()}
+        <Box mt={5}>
+          <Copyright />
+        </Box>
+      </Container>
+    </>
   );
 }

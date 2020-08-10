@@ -3,6 +3,8 @@ import Link from "../src/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Tabs, Tab, Toolbar } from "@material-ui/core";
 import { APP_NAME } from "../config";
+import { isAuth, signout } from "../actions/auth";
+import Router from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   indicator: {
@@ -53,18 +55,38 @@ export default function Header() {
               aria-label="simple tabs example"
               classes={{ indicator: classes.indicator }}
             >
-              <Tab
-                component={Link}
-                href="/signup"
-                label="Sign Up"
-                className={classes.tab}
-              />
-              <Tab
-                component={Link}
-                href="/signin"
-                label="Sign In"
-                className={classes.tab}
-              />
+              {isAuth() && (
+                <Tab
+                  label={`${isAuth().name}'s Dashboard`}
+                  className={classes.tab}
+                  onClick={() =>
+                    Router.replace(isAuth().role === 1 ? "/admin" : "/user")
+                  }
+                />
+              )}
+              {isAuth() && (
+                <Tab
+                  label="Sign Out"
+                  className={classes.tab}
+                  onClick={() => signout(() => Router.replace("/signin"))}
+                />
+              )}
+              {!isAuth() && (
+                <Tab
+                  component={Link}
+                  href="/signup"
+                  label="Sign Up"
+                  className={classes.tab}
+                />
+              )}
+              {!isAuth() && (
+                <Tab
+                  component={Link}
+                  href="/signin"
+                  label="Sign In"
+                  className={classes.tab}
+                />
+              )}
             </Tabs>
           </Box>
         </Toolbar>
