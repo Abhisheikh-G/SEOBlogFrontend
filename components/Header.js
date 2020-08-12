@@ -1,7 +1,7 @@
 import AppBar from "@material-ui/core/AppBar";
 import Link from "../src/Link";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography, Tabs, Tab, Toolbar } from "@material-ui/core";
+import { Box, Typography, Tabs, Tab, Toolbar, Button } from "@material-ui/core";
 import { APP_NAME } from "../config";
 import { isAuth, signout } from "../actions/auth";
 import Router from "next/router";
@@ -43,7 +43,7 @@ export default function Header() {
         <Toolbar>
           <Box>
             <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
-              <Typography className={classes.logo} variant="h3">
+              <Typography button="true" className={classes.logo} variant="h3">
                 {APP_NAME}
               </Typography>
             </Link>
@@ -59,6 +59,7 @@ export default function Header() {
                 <Tab
                   label={`${isAuth().name}'s Dashboard`}
                   className={classes.tab}
+                  component={Button}
                   onClick={() =>
                     Router.replace(isAuth().role === 1 ? "/admin" : "/user")
                   }

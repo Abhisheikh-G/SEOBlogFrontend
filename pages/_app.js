@@ -5,6 +5,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";
 import Header from "../components/Header";
+import NextNprogress from "nextjs-progressbar";
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;
@@ -26,8 +27,10 @@ export default function MyApp(props) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
+
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <NextNprogress height="5" />
         <Header />
         <Component {...pageProps} />
       </ThemeProvider>

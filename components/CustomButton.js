@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustomButton({ text }) {
+export default function CustomButton(props) {
   const classes = useStyles();
 
   return (
-    <Button variant="outlined" className={classes.button}>
-      {text}
+    <Button {...props} variant="outlined" className={classes.button}>
+      {props.text}
     </Button>
   );
 }
