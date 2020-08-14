@@ -1,33 +1,57 @@
 import React from "react";
-import Admin from "../../../components/auth/Admin";
-import AdminHeader from "../../../components/auth/AdminHeader";
-import AdminLayout from "../../../components/auth/AdminLayout";
-import Category from "../../../components/crud/Category";
-import { makeStyles, Grid, Box } from "@material-ui/core";
+import AdminLayout from "../../../components/Auth/AdminLayout";
+import Category from "../../../components/CRUD/Category";
+import {
+  Grid,
+  Box,
+  Toolbar,
+  Button,
+  Divider,
+  Typography,
+  Container,
+} from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({}));
+export default function AdminCategoryManager() {
+  const [open, setOpen] = React.useState(false);
 
-export default function AdminIndex() {
-  const classes = useStyles();
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const layout = (
     <React.Fragment>
-      <Grid container>
-        <Grid item md={6}>
-          <Box>Manage Categories</Box>
-          <Category />
+      <Container>
+        <Grid container>
+          <Grid item md={6}>
+            <Typography variant="h5">Manage Categories</Typography>
+            <Toolbar>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleClickOpen}
+              >
+                Create New Category
+              </Button>
+            </Toolbar>
+
+            <Box mb={1} />
+            <Category handleClose={handleClose} open={open} />
+          </Grid>
+          <Grid item md={6}>
+            <Typography variant="h5">Tags</Typography>
+          </Grid>
         </Grid>
-        <Grid item md={6}>
-          <Box>Tags</Box>
-        </Grid>
-      </Grid>
+      </Container>
     </React.Fragment>
   );
 
   return (
-    <Admin>
-      <AdminHeader>Manage Categories And Tags</AdminHeader>
-      <AdminLayout>{layout}</AdminLayout>
-    </Admin>
+    <AdminLayout headerMessage={"Manage Categories And Tags"}>
+      {layout}
+    </AdminLayout>
   );
 }

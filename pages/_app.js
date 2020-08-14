@@ -1,14 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
-import { ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider, makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Box from "@material-ui/core/Box";
 import theme from "../src/theme";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 import NextNprogress from "nextjs-progressbar";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: "inherit",
+    minHeight: "100vh",
+    position: "relative",
+  },
+}));
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;
+  const classes = useStyles();
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -31,8 +42,12 @@ export default function MyApp(props) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <NextNprogress height="5" />
+
         <Header />
-        <Component {...pageProps} />
+        <Box className={classes.root}>
+          <Component {...pageProps} />
+        </Box>
+        <Footer />
       </ThemeProvider>
     </React.Fragment>
   );

@@ -16,35 +16,36 @@ function ListItemLink(props) {
 
 export default function AdminMenu() {
   const router = useRouter();
+  const [disableLink, setDisableLink] = React.useState(false);
+
+  React.useEffect(() => {
+    if (router.pathname === `/admin/crud/category-tag`) setDisableLink(true);
+  }, []);
+
   return (
     <React.Fragment>
       <Admin>
         <List component="nav" aria-label="main folders">
           <ListItem
             button
-            onClick={() => router.push(`${router.pathname}/crud/category-tag`)}
+            disabled={disableLink}
+            onClick={() => router.push(`/admin/crud/category-tag`)}
           >
             <ListItemIcon>
               <CreateIcon />
             </ListItemIcon>
-            <ListItemText primary="Create Category" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <DraftsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Drafts" />
+            <ListItemText primary="Manage Categories And Tags" />
           </ListItem>
         </List>
         <Divider />
-        <List component="nav" aria-label="secondary mailbox folders">
+        {/* <List component="nav" aria-label="secondary mailbox folders">
           <ListItem button>
             <ListItemText primary="Trash" />
           </ListItem>
           <ListItemLink href="#simple-list">
             <ListItemText primary="Spam" />
           </ListItemLink>
-        </List>
+        </List> */}
       </Admin>
     </React.Fragment>
   );

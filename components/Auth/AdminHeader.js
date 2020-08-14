@@ -1,6 +1,7 @@
 import { Box, Typography } from "@material-ui/core";
 
-export default function AdminHeader({ children }) {
+export default function AdminHeader(props) {
+  const { headerMessage } = props;
   return (
     <Typography component="div" variant="h3">
       <Box
@@ -11,7 +12,7 @@ export default function AdminHeader({ children }) {
         alignItems="center"
         justifyContent="center"
       >
-        {children}
+        {headerMessage}
       </Box>
     </Typography>
   );

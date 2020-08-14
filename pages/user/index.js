@@ -1,5 +1,5 @@
 import React from "react";
-import Private from "../../components/auth/Private";
+import Private from "../../components/Auth/Private";
 import { makeStyles, Grid, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({

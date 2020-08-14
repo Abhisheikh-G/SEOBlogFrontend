@@ -8,15 +8,17 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
     "@zeit/next-css": "^1.0.1",
+    "classnames": "^2.2.6",
     "clsx": "latest",
     "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.2.1",
     "next": "latest",
     "nextjs-progressbar": "0.0.5",
-    "prop-types": "latest",
+    "prop-types": "^15.7.2",
     "react": "latest",
     "react-dom": "latest",
-    "react-hook-form": "^6.3.1"
+    "react-hook-form": "^6.3.1",
+    "react-slick": "^0.27.7"
   },
   "scripts": {
     "dev": "next",
