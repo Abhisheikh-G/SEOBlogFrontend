@@ -2,12 +2,7 @@ import { useReducer, useEffect, useState } from "react";
 import Link from "../../src/Link";
 import { useRouter } from "next/router";
 import { isAuth, getCookie } from "../../actions/auth";
-import {
-  create,
-  getCategories,
-  getCategory,
-  removeCategory,
-} from "../../actions/category";
+import { create, getTags, getTag, removeTag } from "../../actions/tag";
 import CustomButton from "../CustomButton/CustomButton";
 import {
   Box,
@@ -34,40 +29,40 @@ const initialState = {
   reload: false,
 };
 
-const categoryActions = {
+const tagActions = {
   ADD_NAME: "ADD_NAME",
   CLEAR_MESSAGE: "CLEAR_MESSAGE",
-  CREATE_CATEGORY_SUCCESS: "CREATE_CATEGORY_SUCCESS",
-  CREATE_CATEGORY_FAILURE: "CREATE_CATEGORY_FAILURE",
-  DELETE_CATEGORY_SUCCESS: "DELETE_CATEGORY_SUCCESS",
-  DELETE_CATEGORY_FAILURE: "DELETE_CATEGORY_FAILURE",
+  CREATE_TAG_SUCCESS: "CREATE_TAG_SUCCESS",
+  CREATE_TAG_FAILURE: "CREATE_TAG_FAILURE",
+  DELETE_TAG_SUCCESS: "DELETE_TAG_SUCCESS",
+  DELETE_TAG_FAILURE: "DELETE_TAG_FAILURE",
   GET_CATEGORIES_SUCCESS: "GET_CATEGORIES_SUCCESS",
   GET_CATEGORIES_FAILURE: "GET_CATEGORIES_FAILURE",
 };
 
 function reducer(state, action) {
   switch (action.type) {
-    case categoryActions.CLEAR_MESSAGE:
+    case tagActions.CLEAR_MESSAGE:
       return { ...state, message: "", success: false, error: false };
-    case categoryActions.ADD_NAME:
+    case tagActions.ADD_NAME:
       return { ...state, name: action.value };
-    case categoryActions.CREATE_CATEGORY_SUCCESS:
+    case tagActions.CREATE_TAG_SUCCESS:
       return {
         ...state,
         success: true,
         error: false,
         name: "",
         reload: !state.reload,
-        message: "Category successfully created.",
+        message: "Tag successfully created.",
       };
-    case categoryActions.CREATE_CATEGORY_FAILURE:
+    case tagActions.CREATE_TAG_FAILURE:
       return {
         ...state,
         success: false,
         error: true,
         message: action.payload,
       };
-    case categoryActions.DELETE_CATEGORY_SUCCESS:
+    case tagActions.DELETE_TAG_SUCCESS:
       return {
         ...state,
         success: true,
@@ -76,21 +71,21 @@ function reducer(state, action) {
         removed: true,
         message: action.payload,
       };
-    case categoryActions.DELETE_CATEGORY_FAILURE:
+    case tagActions.DELETE_TAG_FAILURE:
       return {
         ...state,
         success: false,
         error: true,
         message: action.payload,
       };
-    case categoryActions.GET_CATEGORIES_FAILURE:
+    case tagActions.GET_CATEGORIES_FAILURE:
       return {
         ...state,
         success: false,
         error: true,
         message: action.payload,
       };
-    case categoryActions.GET_CATEGORIES_SUCCESS:
+    case tagActions.GET_CATEGORIES_SUCCESS:
       return {
         ...state,
         error: false,
@@ -102,69 +97,67 @@ function reducer(state, action) {
   }
 }
 
-export default function Category({ handleClose, open }) {
+export default function Tag({ handleClose, open }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const token = getCookie("token");
 
   useEffect(() => {
-    loadCategories();
+    loadTags();
   }, [state.reload]);
 
-  const loadCategories = async () => {
-    const res = await getCategories();
+  const loadTags = async () => {
+    const res = await getTags();
     const data = await Promise.resolve(res);
 
     !!data.error
       ? dispatch({
-          type: categoryActions.GET_CATEGORIES_FAILURE,
+          type: tagActions.GET_CATEGORIES_FAILURE,
         })
       : dispatch({
-          type: categoryActions.GET_CATEGORIES_SUCCESS,
+          type: tagActions.GET_CATEGORIES_SUCCESS,
           payload: data,
         });
   };
 
-  const deleteCategory = async (slug) => {
-    let answer = window.confirm(
-      "Are you sure you want to delete this category?"
-    );
+  const deleteTag = async (slug) => {
+    let answer = window.confirm("Are you sure you want to delete this tag?");
     if (answer) {
-      const res = await removeCategory(slug, token);
+      const res = await removeTag(slug, token);
       const data = await Promise.resolve(res);
 
       !!data.error
         ? dispatch({
-            type: categoryActions.DELETE_CATEGORY_FAILURE,
+            type: tagActions.DELETE_TAG_FAILURE,
             payload: data.error,
           })
         : dispatch({
-            type: categoryActions.DELETE_CATEGORY_SUCCESS,
+            type: tagActions.DELETE_TAG_SUCCESS,
             payload: data.message,
           });
     }
   };
 
-  const showCategories = () => (
+  const showTags = () => (
     <React.Fragment>
       <Box display="flex" justifyContent="space-around">
         <Typography variant="h5" display="inline">
-          All Categories:
+          All Tags:
         </Typography>
-        <Button variant="outlined" onClick={() => loadCategories()}>
+        <Button variant="outlined" onClick={() => loadTags()}>
           Refresh
         </Button>
       </Box>
       <Box display="flex" flexWrap="wrap" justifyContent="space-between" m={2}>
-        {state.categories.map((category, index) => {
+        {state.categories.map((tag, index) => {
           return (
             <Button
               title="double click to delete"
-              onDoubleClick={() => deleteCategory(category.slug)}
+              onDoubleClick={() => deleteTag(tag.slug)}
               style={{ margin: ".5em" }}
               variant="outlined"
               key={index}
             >
-              {category.name}
+              {tag.name}
             </Button>
           );
         })}
@@ -172,23 +165,23 @@ export default function Category({ handleClose, open }) {
     </React.Fragment>
   );
 
-  const handleCreateCategory = async (e) => {
+  const handleCreateTag = async (e) => {
     e.preventDefault();
     const res = await create({ name: state.name }, token);
     const data = await Promise.resolve(res);
     !!data.error
       ? await dispatch({
-          type: categoryActions.CREATE_CATEGORY_FAILURE,
+          type: tagActions.CREATE_TAG_FAILURE,
           payload: data.error,
         })
       : await dispatch({
-          type: categoryActions.CREATE_CATEGORY_SUCCESS,
+          type: tagActions.CREATE_TAG_SUCCESS,
         });
 
     console.log(data);
   };
 
-  function newCategoryForm() {
+  function newTagForm() {
     return (
       <React.Fragment>
         <Dialog
@@ -196,7 +189,7 @@ export default function Category({ handleClose, open }) {
           onClose={handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Create New Category:</DialogTitle>
+          <DialogTitle id="form-dialog-title">Create New Tag:</DialogTitle>
           <Box
             component={"form"}
             display="flex"
@@ -204,25 +197,25 @@ export default function Category({ handleClose, open }) {
             justifyContent="space-around"
             p={4}
             mb={1}
-            onSubmit={(e) => handleCreateCategory(e)}
+            onSubmit={(e) => handleCreateTag(e)}
           >
             <DialogContent>
               <Container>
                 <TextField
                   id="name"
-                  label="Category Name"
+                  label="Tag Name"
                   value={state.name}
                   required={true}
                   fullWidth={true}
                   onChange={(e) =>
                     dispatch({
-                      type: categoryActions.ADD_NAME,
+                      type: tagActions.ADD_NAME,
                       value: e.target.value,
                     })
                   }
                 />
                 <Box pt={2} display="flex" justifyContent="center">
-                  <CustomButton text="Create Category" type="submit" />
+                  <CustomButton text="Create Tag" type="submit" />
                 </Box>
               </Container>
             </DialogContent>
@@ -266,8 +259,8 @@ export default function Category({ handleClose, open }) {
     <React.Fragment>
       {showSuccess()}
       {showError()}
-      {newCategoryForm()}
-      {showCategories()}
+      {newTagForm()}
+      {showTags()}
     </React.Fragment>
   );
 }
