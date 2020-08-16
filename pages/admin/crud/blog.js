@@ -1,7 +1,5 @@
-import { useState } from "react";
 import AdminLayout from "../../../components/Auth/AdminLayout";
-import Category from "../../../components/CRUD/Category";
-import Tag from "../../../components/CRUD/Tag";
+import { useModal } from "../../../actions/hooks";
 import {
   Grid,
   Box,
@@ -10,32 +8,35 @@ import {
   Typography,
   Container,
 } from "@material-ui/core";
-import { useModal } from "../../../actions/hooks";
+import BlogInterface from "../../../components/CRUD/BlogInterface";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import { getCookie, isAuth } from "../../../actions/auth";
 
-export default function AdminCategoryManager() {
-  const categoryModal = useModal();
-  const tagModal = useModal();
+export default function AdminManageBlog() {
+  const router = useRouter();
+  const blogModal = useModal();
 
   const layout = (
     <React.Fragment>
       <Container>
         <Grid container spacing={4}>
           <Grid item md={6}>
-            <Typography variant="h5">Manage Categories</Typography>
+            <Typography variant="h5">Manage Blogs</Typography>
             <Toolbar>
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={categoryModal.handleClickOpen}
+                onClick={blogModal.handleClickOpen}
                 disableRipple
               >
-                Create New Category
+                Create New Blog
               </Button>
             </Toolbar>
             <Box mb={1} />
-            <Category
-              handleClose={categoryModal.handleClose}
-              open={categoryModal.open}
+            <BlogInterface
+              open={blogModal.open}
+              handleClose={blogModal.handleClose}
             />
           </Grid>
 
@@ -45,23 +46,18 @@ export default function AdminCategoryManager() {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={tagModal.handleClickOpen}
+                onClick={blogModal.handleClickOpen}
                 disableRipple
               >
                 Create New Tag
               </Button>
             </Toolbar>
             <Box mb={1} />
-            <Tag handleClose={tagModal.handleClose} open={tagModal.open} />
           </Grid>
         </Grid>
       </Container>
     </React.Fragment>
   );
 
-  return (
-    <AdminLayout headerMessage={"Manage Categories And Tags"}>
-      {layout}
-    </AdminLayout>
-  );
+  return <AdminLayout headerMessage={"Manage Blogs"}>{layout}</AdminLayout>;
 }

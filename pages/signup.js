@@ -32,8 +32,12 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+  },
   paper: {
     marginTop: theme.spacing(8),
+
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -100,7 +104,7 @@ export default function SignUp() {
   const showMessage = () =>
     message ? <Alert severity="success">{message}</Alert> : "";
   const signupForm = () => (
-    <div className={classes.paper}>
+    <Box className={classes.paper}>
       <Avatar className={classes.avatar}>
         <LockOutlinedIcon />
       </Avatar>
@@ -183,14 +187,14 @@ export default function SignUp() {
           </Grid>
         </Grid>
       </form>
-    </div>
+    </Box>
   );
 
   return (
     <>
       {showError()}
       {showMessage()}
-      <Container component="main" maxWidth="xs">
+      <Container className={classes.root} component="main" maxWidth="xs">
         <CssBaseline />
         {showForm && signupForm()}
         {showLoading()}

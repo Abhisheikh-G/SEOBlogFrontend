@@ -24,7 +24,7 @@ const initialState = {
   error: false,
   message: "",
   success: false,
-  categories: [],
+  tags: [],
   removed: false,
   reload: false,
 };
@@ -36,8 +36,8 @@ const tagActions = {
   CREATE_TAG_FAILURE: "CREATE_TAG_FAILURE",
   DELETE_TAG_SUCCESS: "DELETE_TAG_SUCCESS",
   DELETE_TAG_FAILURE: "DELETE_TAG_FAILURE",
-  GET_CATEGORIES_SUCCESS: "GET_CATEGORIES_SUCCESS",
-  GET_CATEGORIES_FAILURE: "GET_CATEGORIES_FAILURE",
+  GET_TAGS_SUCCESS: "GET_TAGS_SUCCESS",
+  GET_TAGS_FAILURE: "GET_TAGS_FAILURE",
 };
 
 function reducer(state, action) {
@@ -78,18 +78,18 @@ function reducer(state, action) {
         error: true,
         message: action.payload,
       };
-    case tagActions.GET_CATEGORIES_FAILURE:
+    case tagActions.GET_TAGS_FAILURE:
       return {
         ...state,
         success: false,
         error: true,
         message: action.payload,
       };
-    case tagActions.GET_CATEGORIES_SUCCESS:
+    case tagActions.GET_TAGS_SUCCESS:
       return {
         ...state,
         error: false,
-        categories: action.payload,
+        tags: action.payload,
         reload: state.reload,
       };
     default:
@@ -111,10 +111,10 @@ export default function Tag({ handleClose, open }) {
 
     !!data.error
       ? dispatch({
-          type: tagActions.GET_CATEGORIES_FAILURE,
+          type: tagActions.GET_TAGS_FAILURE,
         })
       : dispatch({
-          type: tagActions.GET_CATEGORIES_SUCCESS,
+          type: tagActions.GET_TAGS_SUCCESS,
           payload: data,
         });
   };

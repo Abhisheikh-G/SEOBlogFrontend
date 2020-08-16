@@ -8,6 +8,7 @@ import theme from "../src/theme";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import NextNprogress from "nextjs-progressbar";
+import "../node_modules/react-quill/dist/quill.snow.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
