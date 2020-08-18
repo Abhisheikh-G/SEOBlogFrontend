@@ -184,8 +184,6 @@ export default function Category({ handleClose, open }) {
       : await dispatch({
           type: categoryActions.CREATE_CATEGORY_SUCCESS,
         });
-
-    console.log(data);
   };
 
   function newCategoryForm() {

@@ -55,6 +55,12 @@ export default function Header() {
               aria-label="simple tabs example"
               classes={{ indicator: classes.indicator }}
             >
+              <Tab
+                label={`Blogs`}
+                className={classes.tab}
+                component={Button}
+                onClick={() => Router.push("/blogs")}
+              />
               {isAuth() && (
                 <Tab
                   label={`${isAuth().name}'s Dashboard`}

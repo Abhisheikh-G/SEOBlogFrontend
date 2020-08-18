@@ -6,20 +6,23 @@ export const createBlog = (blog, token) => {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(blog),
+    body: blog,
   })
     .then((response) => {
-      return response.json();
+      return response.json({ message: "Successfully created blog." });
     })
     .catch((err) => console.log(err));
 };
 
-export const getBlogs = () => {
-  return fetch(`${API}/blogs`, {
-    method: "GET",
+export const listAllBlogsInfo = () => {
+  return fetch(`${API}/blogs-categories-tags`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
   })
     .then((response) => {
       return response.json();

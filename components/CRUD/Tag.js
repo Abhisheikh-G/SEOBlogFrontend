@@ -148,7 +148,7 @@ export default function Tag({ handleClose, open }) {
         </Button>
       </Box>
       <Box display="flex" flexWrap="wrap" justifyContent="space-between" m={2}>
-        {state.categories.map((tag, index) => {
+        {state.tags.map((tag, index) => {
           return (
             <Button
               title="double click to delete"

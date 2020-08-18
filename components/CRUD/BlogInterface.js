@@ -1,7 +1,7 @@
 import { useReducer, useEffect } from "react";
 import { getCookie } from "../../actions/auth";
 import { getBlogs, removeBlog, createBlog } from "../../actions/blog";
-import { getCategories } from "../../actions/category";
+import { getCategories, create } from "../../actions/category";
 import { getTags } from "../../actions/tag";
 
 import CustomButton from "../CustomButton/CustomButton";
@@ -21,6 +21,8 @@ import {
   InputLabel,
   FormControl,
   Input,
+  FormControlLabel,
+  InputBase,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import dynamic from "next/dynamic";
@@ -37,7 +39,8 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 const initialState = {
   title: "",
   body: "",
-  formData: "",
+  formData: new FormData(),
+  photo: "",
   categories: [],
   selectedCategories: [],
   tags: [],
@@ -53,6 +56,7 @@ const initialState = {
 
 const blogActions = {
   ADD_FIELD: "ADD_FIELD",
+  CLEAR_FORM: "CLEAR_FORM",
   CLEAR_MESSAGE: "CLEAR_MESSAGE",
   CREATE_FORM_DATA: "CREATE_FORM_DATA",
   RETRIEVE_STORED_FORM_DATA: "RETRIEVE_STORED_FORM_DATA",
@@ -62,12 +66,23 @@ const blogActions = {
   GET_CATEGORIES_SUCCESS: "GET_CATEGORIES_SUCCESS",
   GET_CATEGORIES_FAILURE: "GET_CATEGORIES_FAILURE",
   ADD_CATEGORY_TO_BLOG: "ADD_CATEGORY_TO_BLOG",
+  CREATE_BLOG_SUCCESS: "CREATE_BLOG_SUCCESS",
+  CREATE_BLOG_FAILURE: "CREATE_BLOG_FAILURE",
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case blogActions.CLEAR_MESSAGE:
       return { ...state, message: "", success: false, error: false };
+    case blogActions.CLEAR_FORM:
+      return {
+        ...state,
+        title: "",
+        body: "",
+        photo: "",
+        selectedCategories: [],
+        selectedTags: [],
+      };
     case blogActions.ADD_FIELD:
       return {
         ...state,
@@ -127,6 +142,20 @@ function reducer(state, action) {
         ...state,
         selectedTags: action.payload,
       };
+    case blogActions.CREATE_BLOG_SUCCESS:
+      return {
+        ...state,
+        success: true,
+        error: false,
+        message: action.payload,
+      };
+    case blogActions.CREATE_BLOG_FAILURE:
+      return {
+        ...state,
+        success: false,
+        error: true,
+        message: action.payload,
+      };
     default:
       throw new Error();
   }
@@ -143,13 +172,6 @@ export default function BlogInterface({ handleClose, open }) {
     categories,
     selectedCategories,
     selectedTags,
-    hidePublishButton,
-    error,
-    sizeError,
-    success,
-    removed,
-    reload,
-    message,
   } = state;
   const token = getCookie("token");
   const router = useRouter();
@@ -183,6 +205,7 @@ export default function BlogInterface({ handleClose, open }) {
       type: blogActions.ADD_CATEGORY_TO_BLOG,
       payload: e.target.value,
     });
+    formData.set("categories", e.target.value);
   };
 
   const showCategories = () =>
@@ -197,7 +220,7 @@ export default function BlogInterface({ handleClose, open }) {
           multiple
         >
           {categories.map((category, index) => (
-            <MenuItem key={`${category.name} ${index}`} value={category.name}>
+            <MenuItem key={`${category.name} ${index}`} value={category._id}>
               {category.name}
             </MenuItem>
           ))}
@@ -223,6 +246,7 @@ export default function BlogInterface({ handleClose, open }) {
       type: blogActions.ADD_TAG_TO_BLOG,
       payload: e.target.value,
     });
+    formData.set("tags", e.target.value);
   };
 
   const showTags = () =>
@@ -237,7 +261,7 @@ export default function BlogInterface({ handleClose, open }) {
           multiple
         >
           {tags.map((tag, index) => (
-            <MenuItem key={`${tag.name} ${index}`} value={tag.name}>
+            <MenuItem key={`${tag.name} ${index}`} value={tag._id}>
               {tag.name}
             </MenuItem>
           ))}
@@ -258,11 +282,44 @@ export default function BlogInterface({ handleClose, open }) {
         });
   };
 
+  const addPhoto = () => (
+    <>
+      <label>
+        Add Featured Photo
+        <Box
+          component="input"
+          name="photo"
+          onChange={handleChangeField}
+          type="file"
+          accept="image/*"
+        />
+      </label>
+    </>
+  );
+
+  const handleCreateBlog = async (e) => {
+    e.preventDefault();
+    createBlog(formData, token).then((data) => {
+      if (data.error)
+        dispatch({
+          type: blogActions.CREATE_BLOG_FAILURE,
+          payload: data.error,
+        });
+      else {
+        dispatch({
+          type: blogActions.CREATE_BLOG_SUCCESS,
+          payload: data.message,
+        });
+        dispatch({ type: blogActions.CLEAR_FORM });
+      }
+    });
+  };
+
   const handleChangeField = (e) => {
     const name = e.target.name;
     const value = name === "photo" ? e.target.files[0] : e.target.value;
     !!window && localStorage.setItem(name, JSON.stringify(value));
-    formData.set(name, value);
+    formData.set([name], value);
     dispatch({ type: blogActions.ADD_FIELD, payload: { name, value } });
   };
 
@@ -290,10 +347,12 @@ export default function BlogInterface({ handleClose, open }) {
             justifyContent="space-around"
             p={4}
             mb={1}
-            onSubmit={(e) => handleCreateBlog(e)}
+            onSubmit={handleCreateBlog}
           >
             <DialogContent>
               <Container>
+                {showSuccess()}
+                {showError()}
                 <TextField
                   id="title"
                   name="title"
@@ -305,7 +364,8 @@ export default function BlogInterface({ handleClose, open }) {
                 />
                 <Box my={2} display="flex" justifyContent="space-between">
                   <Box width="50%">{showCategories()}</Box>
-                  <Box width="33%">{showTags()}</Box>
+                  <Box width="20%">{showTags()}</Box>
+                  <Box width="20%">{addPhoto()} </Box>
                 </Box>
                 <Box mt={2}>
                   <ReactQuill
@@ -357,13 +417,7 @@ export default function BlogInterface({ handleClose, open }) {
       </Alert>
     );
 
-  return (
-    <React.Fragment>
-      {showSuccess()}
-      {showError()}
-      {newBlogForm()}
-    </React.Fragment>
-  );
+  return <React.Fragment>{newBlogForm()}</React.Fragment>;
 }
 
 BlogInterface.modules = {
