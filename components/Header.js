@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Tabs, Tab, Toolbar, Button } from "@material-ui/core";
 import { APP_NAME } from "../config";
 import { isAuth, signout } from "../actions/auth";
+import Search from "../components/Search";
 import Router from "next/router";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,9 +14,7 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black",
   },
-  tabsContainer: {
-    marginLeft: "auto",
-  },
+  tabsContainer: { marginLeft: "auto", display: "flex" },
   tab: {
     transition: "all .2s ease-in",
     textDecoration: "none",
@@ -48,7 +47,11 @@ export default function Header() {
               </Typography>
             </Link>
           </Box>
+
           <Box className={classes.tabsContainer}>
+            <Box my="auto" mr="10px">
+              <Search />
+            </Box>
             <Tabs
               value={value}
               onChange={handleChange}

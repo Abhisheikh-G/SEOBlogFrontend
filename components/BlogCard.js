@@ -10,6 +10,10 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Chip, Box, Grid } from "@material-ui/core";
+import { red, pink } from "@material-ui/core/colors";
+import { API } from "../config";
+import { getThemeProps } from "@material-ui/styles";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,18 +21,39 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[4],
   },
   media: {
-    height: 140,
+    height: 180,
+  },
+  chip: {
+    backgroundColor: pink[400],
+    margin: theme.spacing(0.5),
+  },
+  chipTag: {
+    backgroundColor: pink[200],
+    margin: theme.spacing(0.5),
   },
 }));
 
-export default function BlogCard({ blog }) {
+export default function BlogCard({ isRelated, blog }) {
   const classes = useStyles();
+  const router = useRouter();
 
   const showBlogCategories = blog.categories.map((category, index) => (
     <Chip
+      size="small"
+      className={classes.chip}
       component={Link}
-      href={`categories/${category.slug}`}
+      href={`/categories/${category.slug}`}
       label={category.name}
+    />
+  ));
+
+  const showBlogTags = blog.tags.map((tag, index) => (
+    <Chip
+      size="small"
+      className={classes.chipTag}
+      component={Link}
+      href={`/tags/${tag.slug}`}
+      label={tag.name}
     />
   ));
 
@@ -40,33 +65,52 @@ export default function BlogCard({ blog }) {
         className={classes.root}
         key={`${blog.title}`}
       >
-        <CardActionArea>
+        <CardActionArea onClick={() => router.push(`/blogs/${blog.slug}`)}>
           <CardMedia
             className={classes.media}
-            image={blog.photo}
+            image={`${API}/blog/photo/${blog.slug}`}
             title={blog.title}
           />
           <CardContent>
-            <Typography gutterBottom variant="subtitle1" component="h2">
+            <Typography gutterBottom variant="h5" component="h2">
+              {blog.title}
+            </Typography>
+            <Typography gutterBottom variant="caption" component="h3">
               Written by: {blog.author.name} | Published at:
               {` ${moment(blog.updatedAt).fromNow()}`}
             </Typography>
-            <Box>{showBlogCategories}</Box>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {renderHTML(blog.excerpt)}
-            </Typography>
+            {!isRelated && (
+              <Box>
+                <Typography variant="caption">Categories:</Typography>
+                {showBlogCategories}
+              </Box>
+            )}
+
+            {!isRelated && (
+              <Typography variant="body2" color="textSecondary" component="p">
+                {renderHTML(blog.excerpt)}
+              </Typography>
+            )}
           </CardContent>
         </CardActionArea>
         <CardActions>
           <Button
             component={Link}
-            href={`blogs/${blog.slug}`}
+            href={`/blogs/${blog.slug}`}
             size="small"
             color="primary"
           >
             Read More
           </Button>
         </CardActions>
+        {!isRelated && (
+          <CardContent>
+            <Box>
+              <Typography variant="caption">Tags:</Typography>
+              {showBlogTags}
+            </Box>
+          </CardContent>
+        )}
       </Card>
     </Grid>
   );

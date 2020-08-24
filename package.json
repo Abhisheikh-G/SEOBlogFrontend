@@ -16,6 +16,7 @@
     "next": "latest",
     "nextjs-progressbar": "0.0.5",
     "prop-types": "^15.7.2",
+    "query-string": "^6.13.1",
     "react": "latest",
     "react-dom": "latest",
     "react-hook-form": "^6.3.1",

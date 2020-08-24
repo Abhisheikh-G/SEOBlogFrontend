@@ -120,7 +120,7 @@ export default function Tag({ handleClose, open }) {
   };
 
   const deleteTag = async (slug) => {
-    let answer = window.confirm("Are you sure you want to delete this tag?");
+    let answer = window.confirm(`Are you sure you want to delete this tag?`);
     if (answer) {
       const res = await removeTag(slug, token);
       const data = await Promise.resolve(res);

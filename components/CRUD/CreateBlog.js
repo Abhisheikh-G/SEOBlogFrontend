@@ -39,7 +39,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 const initialState = {
   title: "",
   body: "",
-  formData: new FormData(),
+  formData: {},
   photo: "",
   categories: [],
   selectedCategories: [],
@@ -161,7 +161,7 @@ function reducer(state, action) {
   }
 }
 
-export default function BlogInterface({ handleClose, open }) {
+export default function CreateBlog({ handleClose, open }) {
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
   const {
@@ -311,6 +311,8 @@ export default function BlogInterface({ handleClose, open }) {
           payload: data.message,
         });
         dispatch({ type: blogActions.CLEAR_FORM });
+        localStorage.removeItem("blog");
+        localStorage.removeItem("title");
       }
     });
   };
@@ -370,8 +372,8 @@ export default function BlogInterface({ handleClose, open }) {
                 <Box mt={2}>
                   <ReactQuill
                     onChange={handleBody}
-                    modules={BlogInterface.modules}
-                    formats={BlogInterface.formats}
+                    modules={CreateBlog.modules}
+                    formats={CreateBlog.formats}
                     placeholder="Write something amazing!"
                     value={body}
                   />
@@ -420,7 +422,7 @@ export default function BlogInterface({ handleClose, open }) {
   return <React.Fragment>{newBlogForm()}</React.Fragment>;
 }
 
-BlogInterface.modules = {
+CreateBlog.modules = {
   toolbar: [
     [{ header: "1" }, { header: "2" }, { header: [3, 4, 5, 6] }, { font: [] }],
     [{ size: [] }],
@@ -432,7 +434,7 @@ BlogInterface.modules = {
   ],
 };
 
-BlogInterface.formats = [
+CreateBlog.formats = [
   "header",
   "font",
   "size",
