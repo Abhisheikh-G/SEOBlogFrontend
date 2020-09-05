@@ -8,6 +8,7 @@ import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -67,7 +68,12 @@ export default function SignInSide() {
   const [loading, setLoading] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState("");
-  const [showForm, setShowForm] = React.useState(true);
+
+  const redirectMessage = Router.query && (
+    <Alert severity="error" color={error}>
+      {Router.query.message}
+    </Alert>
+  );
 
   React.useEffect(() => {
     if (isAuth()) {
@@ -107,6 +113,7 @@ export default function SignInSide() {
     <>
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
+        {redirectMessage}
         <Grid item xs={false} sm={4} md={7} className={classes.image} />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>

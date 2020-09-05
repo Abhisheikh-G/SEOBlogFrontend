@@ -65,18 +65,29 @@ export default function BlogCard({ isRelated, blog }) {
         className={classes.root}
         key={`${blog.title}`}
       >
-        <CardActionArea onClick={() => router.push(`/blogs/${blog.slug}`)}>
+        <CardActionArea disableRipple style={{ cursor: "auto" }}>
           <CardMedia
             className={classes.media}
             image={`${API}/blog/photo/${blog.slug}`}
             title={blog.title}
           />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              align="center"
+              style={{ cursor: "pointer", width: "auto" }}
+              onClick={() => router.push(`/blogs/${blog.slug}`)}
+            >
               {blog.title}
             </Typography>
             <Typography gutterBottom variant="caption" component="h3">
-              Written by: {blog.author.name} | Published at:
+              Written by:{" "}
+              <Link href={`/profile/${blog.author.username}`}>
+                {blog.author.username}
+              </Link>{" "}
+              | Published at:
               {` ${moment(blog.updatedAt).fromNow()}`}
             </Typography>
             {!isRelated && (

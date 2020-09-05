@@ -358,7 +358,7 @@ export default function UpdateBlog({ handleClose, open, blog }) {
           fullWidth={true}
           maxWidth="lg"
         >
-          <DialogTitle id="form-dialog-title">Create New Blog:</DialogTitle>
+          <DialogTitle id="form-dialog-title">Update Blog:</DialogTitle>
           <Box
             component={"form"}
             display="flex"

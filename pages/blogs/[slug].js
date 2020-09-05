@@ -7,7 +7,7 @@ import BlogCard from "../../components/BlogCard";
 import { getBlog, listRelatedBlogs } from "../../actions/blog";
 import { API, DOMAIN, APP_NAME } from "../../config";
 import { pink } from "@material-ui/core/colors";
-
+import DisqusThread from "../../components/DisqusThread";
 import {
   Container,
   Box,
@@ -151,7 +151,11 @@ export default function SingleBlog({ blog }) {
               align="center"
               component="h3"
             >
-              Written by: {blog.author.name} | Published at:
+              Written by:{" "}
+              <Link href={`/profile/${blog.author.username}`}>
+                {blog.author.username}
+              </Link>{" "}
+              | Published at:
               {` ${moment(blog.updatedAt).fromNow()}`}
             </Typography>
             <Box display="flex" alignItems="center" justifyContent="center">
@@ -178,6 +182,11 @@ export default function SingleBlog({ blog }) {
           <Box>
             <Container maxWidth="lg">
               <Typography variant="h5">Comments:</Typography>
+              <DisqusThread
+                id={blog._id}
+                title={blog.title}
+                path={`/blog/${blog.slug}`}
+              />
             </Container>
           </Box>
         </Grid>

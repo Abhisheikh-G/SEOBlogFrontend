@@ -8,30 +8,30 @@ import {
 import CreateIcon from "@material-ui/icons/Create";
 import DraftsIcon from "@material-ui/icons/Drafts";
 import { useRouter } from "next/router";
-import Admin from "./Admin";
+import User from "./User";
 import { useLinkDisable } from "../../actions/hooks";
 
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
 }
 
-export default function AdminMenu() {
+export default function UserMenu() {
   const router = useRouter();
   const categoryTagLink = useLinkDisable(
     router.pathname,
-    "/admin/crud/category-tag"
+    "/user/crud/category-tag"
   );
-  const blogLink = useLinkDisable(router.pathname, "/admin/crud/blog");
+  const blogLink = useLinkDisable(router.pathname, "/user/crud/create");
   const profileLink = useLinkDisable(router.pathname, "/user/update");
 
   return (
     <React.Fragment>
-      <Admin>
+      <User>
         <List component="nav" aria-label="main folders">
           <ListItem
             button
             disabled={categoryTagLink.isDisabled}
-            onClick={() => router.push(`/admin/crud/category-tag`)}
+            onClick={() => router.push(`/user/crud/category-tag`)}
           >
             <ListItemIcon>
               <CreateIcon />
@@ -41,7 +41,7 @@ export default function AdminMenu() {
           <ListItem
             button
             disabled={blogLink.isDisabled}
-            onClick={() => router.push(`/admin/crud/blog`)}
+            onClick={() => router.push(`/user/crud/create`)}
           >
             <ListItemIcon>
               <CreateIcon />
@@ -61,14 +61,14 @@ export default function AdminMenu() {
         </List>
         <Divider />
         {/* <List component="nav" aria-label="secondary mailbox folders">
-          <ListItem button>
-            <ListItemText primary="Trash" />
-          </ListItem>
-          <ListItemLink href="#simple-list">
-            <ListItemText primary="Spam" />
-          </ListItemLink>
-        </List> */}
-      </Admin>
+            <ListItem button>
+              <ListItemText primary="Trash" />
+            </ListItem>
+            <ListItemLink href="#simple-list">
+              <ListItemText primary="Spam" />
+            </ListItemLink>
+          </List> */}
+      </User>
     </React.Fragment>
   );
 }

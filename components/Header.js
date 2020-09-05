@@ -64,6 +64,14 @@ export default function Header() {
                 component={Button}
                 onClick={() => Router.push("/blogs")}
               />
+              {isAuth() && isAuth().role === 0 && (
+                <Tab
+                  label={`Create Blog`}
+                  className={classes.tab}
+                  component={Button}
+                  onClick={() => Router.push("/user/crud/create")}
+                />
+              )}
               {isAuth() && (
                 <Tab
                   label={`${isAuth().name}'s Dashboard`}
